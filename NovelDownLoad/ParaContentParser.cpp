@@ -15,13 +15,13 @@ ParaContentParser::~ParaContentParser()
 QString ParaContentParser::getContent()
 {
 	QWebElement body = m_pDocElement.findFirst(QString("body"));
-	QWebElement content = body.findFirst(QString("div[id=content]"));
+	QWebElement content = body.findFirst(QString("#txtContent"));
 	return content.toPlainText();
 }
 
 QString ParaContentParser::getTitle()
 {
 	QWebElement body = m_pDocElement.findFirst(QString("body"));
-	QWebElement head = body.findFirst(QString("h1"));
+	QWebElement head = body.findFirst(QString("#h1 > h1"));
 	return head.toPlainText();
 }

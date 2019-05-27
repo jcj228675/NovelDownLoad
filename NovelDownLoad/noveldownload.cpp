@@ -39,9 +39,10 @@ void NovelDownLoad::onDownLoad()
 {
 	QString sUrl = ui.m_pNetWorkEdit->text();
 	QString sFile = ui.m_pFileEdit->text();
+	QString sRootPage = ui.m_pRootPage->text();
 
 	m_pWriter.reset(new TextWriter(sFile));
-	m_pParser.reset(new UrlParser(QUrl(sUrl), m_pWriter.get()));
+	m_pParser.reset(new UrlParser(QUrl(sUrl), m_pWriter.get(), sRootPage));
 	m_pParser->parse();
 }
 

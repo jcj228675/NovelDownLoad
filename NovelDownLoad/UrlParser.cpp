@@ -10,9 +10,10 @@
 #include "DirectoryParser.h"
 #include "ParaContentParser.h"
 
-UrlParser::UrlParser(QUrl &oUrl, TextWriter *pWriter)
+UrlParser::UrlParser(QUrl &oUrl, TextWriter *pWriter, QString sRootPage)
 :m_oUrl(oUrl), m_pWriter(pWriter)
 {
+	m_sRootPage = sRootPage.isEmpty() ? QString("https://www.boquge.com") : sRootPage;
 	connect(pView, &QWebView::loadFinished, this, &UrlParser::endLoadPage);
 	connect(this, &UrlParser::endDownLoad, pMainWindow, &NovelDownLoad::onEndLoad);
 }
@@ -53,7 +54,8 @@ void UrlParser::parsePage()
 
 		m_oUrls = oDirParser.getParas();
 		m_nCurPara = 0;
-		loadPage(QUrl(m_oUrl.toDisplayString() + m_oUrls[m_nCurPara]));
+		skipEmpty();
+		loadPage(QUrl(rootUrl() + m_oUrls[m_nCurPara]));
 		m_bCurDir = false;
 	}
 	else
@@ -64,13 +66,28 @@ void UrlParser::parsePage()
 		m_pWriter->writeContent(oContentParser.getContent());
 
 		m_nCurPara++;
+		skipEmpty();
 		if (m_nCurPara < m_oUrls.size())
 		{
-			loadPage(QUrl(m_oUrl.toDisplayString() + m_oUrls[m_nCurPara]));
+			loadPage(QUrl(rootUrl() + m_oUrls[m_nCurPara]));
 		}
 		else
 		{
 			emit endDownLoad();
 		}
 	}
+}
+
+void UrlParser::skipEmpty()
+{
+	while (m_oUrls[m_nCurPara].isEmpty())
+	{
+		++m_nCurPara;
+	}
+}
+
+QString UrlParser::rootUrl()
+{
+	// return m_oUrl.toDisplayString();
+	return m_sRootPage;
 }

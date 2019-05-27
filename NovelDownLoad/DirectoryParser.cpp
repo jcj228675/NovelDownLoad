@@ -15,8 +15,8 @@ DirectoryParser::~DirectoryParser()
 QStringList DirectoryParser::getParas()
 {
 	QStringList oReselt;
-	QWebElement oList = m_oDocElement.findFirst(QString("dl"));
-	QWebElementCollection oPages = oList.findAll(QString("dd"));
+	QWebElement oList = m_oDocElement.findFirst(QString("#chapters-list"));
+	QWebElementCollection oPages = oList.findAll(QString("li"));
 	for (int i = 0; i < oPages.count(); i++)
 	{
 		QWebElement oLink = oPages[i].findFirst(QString("a"));
