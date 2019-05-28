@@ -10,7 +10,7 @@ class UrlParser : public QObject
 {
 	Q_OBJECT
 public:
-	UrlParser(QUrl &oUrl, TextWriter *pWriter, QString m_sRootPage);
+	UrlParser(QUrl &oUrl, TextWriter *pWriter, QString sRootPage, QString sContentSelector, QString sTitleSelector, QString sUrlListSelector, QString sItemLabelSelector);
 	~UrlParser();
 	void parse();
 	void loadPage(QUrl &oUrl);
@@ -28,6 +28,10 @@ private:
 	int m_nCurPara;
 	bool m_bCurDir;
 	QString m_sRootPage;
+	QString m_sContentSelector;
+	QString m_sTitleSelector;
+	QString m_sUrlListSelector;
+	QString m_sItemLabelSelector;
 
 	void parsePage();
 	void skipEmpty();

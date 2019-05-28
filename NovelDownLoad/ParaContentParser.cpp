@@ -2,8 +2,10 @@
 
 #include <QWebFrame>
 
-ParaContentParser::ParaContentParser(QWebFrame *pFrame)
-: m_pDocElement(pFrame->documentElement())
+ParaContentParser::ParaContentParser(QWebFrame *pFrame, QString sContentSelector, QString sTitleSelector)
+: m_pDocElement(pFrame->documentElement()),
+m_sContentSelector(sContentSelector),
+m_sTitleSelector(sTitleSelector)
 {
 }
 
@@ -15,13 +17,13 @@ ParaContentParser::~ParaContentParser()
 QString ParaContentParser::getContent()
 {
 	QWebElement body = m_pDocElement.findFirst(QString("body"));
-	QWebElement content = body.findFirst(QString("#txtContent"));
+	QWebElement content = body.findFirst(m_sContentSelector);
 	return content.toPlainText();
 }
 
 QString ParaContentParser::getTitle()
 {
 	QWebElement body = m_pDocElement.findFirst(QString("body"));
-	QWebElement head = body.findFirst(QString("#h1 > h1"));
+	QWebElement head = body.findFirst(m_sTitleSelector);
 	return head.toPlainText();
 }

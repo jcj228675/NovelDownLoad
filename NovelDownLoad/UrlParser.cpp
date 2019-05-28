@@ -10,8 +10,13 @@
 #include "DirectoryParser.h"
 #include "ParaContentParser.h"
 
-UrlParser::UrlParser(QUrl &oUrl, TextWriter *pWriter, QString sRootPage)
-:m_oUrl(oUrl), m_pWriter(pWriter)
+
+UrlParser::UrlParser( QUrl &oUrl, TextWriter *pWriter, QString sRootPage, QString sContentSelector, QString sTitleSelector, QString sUrlListSelector, QString sItemLabelSelector )
+	:m_oUrl(oUrl), m_pWriter(pWriter),
+	m_sContentSelector(sContentSelector),
+	m_sTitleSelector(sTitleSelector),
+	m_sUrlListSelector(sUrlListSelector),
+	m_sItemLabelSelector(sItemLabelSelector)
 {
 	m_sRootPage = sRootPage.isEmpty() ? QString("https://www.boquge.com") : sRootPage;
 	connect(pView, &QWebView::loadFinished, this, &UrlParser::endLoadPage);
@@ -49,7 +54,7 @@ void UrlParser::parsePage()
 	
 	if (m_bCurDir)
 	{
-		DirectoryParser oDirParser(pFrame);
+		DirectoryParser oDirParser(pFrame, m_sUrlListSelector, m_sItemLabelSelector);
 		//m_pWriter->writeNovelName(oDirParser.getNovelName());
 
 		m_oUrls = oDirParser.getParas();
@@ -60,7 +65,7 @@ void UrlParser::parsePage()
 	}
 	else
 	{
-		ParaContentParser oContentParser(pFrame);
+		ParaContentParser oContentParser(pFrame, m_sContentSelector, m_sTitleSelector);
 
 		m_pWriter->writeTitle(oContentParser.getTitle());
 		m_pWriter->writeContent(oContentParser.getContent());
@@ -80,7 +85,7 @@ void UrlParser::parsePage()
 
 void UrlParser::skipEmpty()
 {
-	while (m_oUrls[m_nCurPara].isEmpty())
+	while (m_nCurPara < m_oUrls.size() && m_oUrls[m_nCurPara].isEmpty())
 	{
 		++m_nCurPara;
 	}
@@ -88,6 +93,5 @@ void UrlParser::skipEmpty()
 
 QString UrlParser::rootUrl()
 {
-	// return m_oUrl.toDisplayString();
 	return m_sRootPage;
 }

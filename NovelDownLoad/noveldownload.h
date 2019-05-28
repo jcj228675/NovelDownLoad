@@ -23,6 +23,8 @@ public slots:
 	void onEndLoad();
 
 private:
+	QString getValue(QString sValueLabel);
+
 	Ui::Dialog ui;
 	std::unique_ptr<TextWriter> m_pWriter;
 	std::unique_ptr<UrlParser> m_pParser;
